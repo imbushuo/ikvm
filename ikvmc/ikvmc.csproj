@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DefineConstants>TRACE;DNC;NET_4_0;STATIC_COMPILER;EMITTERS</DefineConstants>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../CommonAssemblyInfo.cs" />
+    <Compile Include="../runtime/AssemblyClassLoader.cs" />
+    <Compile Include="../runtime/atomic.cs" />
+    <Compile Include="../runtime/attributes.cs" />
+    <Compile Include="../runtime/BigEndianBinaryReader.cs" />
+    <Compile Include="../runtime/Boxer.cs" />
+    <Compile Include="../runtime/ByteCode.cs" />
+    <Compile Include="../runtime/ClassFile.cs" />
+    <Compile Include="../runtime/ClassLoaderWrapper.cs" />
+    <Compile Include="../runtime/CodeEmitter.cs" />
+    <Compile Include="../runtime/compiler.cs" />
+    <Compile Include="../runtime/CoreClasses.cs" />
+    <Compile Include="../runtime/DotNetTypeWrapper.cs" />
+    <Compile Include="../runtime/DynamicClassLoader.cs" />
+    <Compile Include="../runtime/DynamicTypeWrapper.cs" />
+    <Compile Include="../runtime/intrinsics.cs" />
+    <Compile Include="../runtime/JavaException.cs" />
+    <Compile Include="../runtime/JsrInliner.cs" />
+    <Compile Include="../runtime/LambdaMetafactory.cs" />
+    <Compile Include="../runtime/LocalVars.cs" />
+    <Compile Include="../runtime/MemberWrapper.cs" />
+    <Compile Include="../runtime/MethodHandleUtil.cs" />
+    <Compile Include="../runtime/profiler.cs" />
+    <Compile Include="../runtime/ReflectUtil.cs" />
+    <Compile Include="../runtime/RuntimeHelperTypes.cs" />
+    <Compile Include="../runtime/Serialization.cs" />
+    <Compile Include="../runtime/tracer.cs" />
+    <Compile Include="../runtime/Types.cs" />
+    <Compile Include="../runtime/TypeWrapper.cs" />
+    <Compile Include="../runtime/verifier.cs" />
+    <Compile Include="../runtime/vm.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpZipLib" Version="1.2.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <ProjectReference Include="..\reflect\IKVM.Reflection.csproj" />
+  </ItemGroup>
+
+</Project>
