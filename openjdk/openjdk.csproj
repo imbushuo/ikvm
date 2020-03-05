@@ -44,9 +44,92 @@
   <Target Name="SourceListGen">
     <TokenReplace Path="allsources.lst" OutputPath="allsources.gen.lst" Token="@OPENJDK@" Replacement="$(OpenJdkDir)" />
   </Target>
-
-  <Target Name="OpenJdkGen" BeforeTargets="PrepareForBuild">
+  
+  <!-- FileList clean -->
+  <Target Name="SourceListClean">
+    <Delete Files="allsources.gen.lst" />
+  </Target>
+  
+  <!-- StubJar Gen -->
+  <ItemGroup Label="StubJarsList">
+    <StubJarLib Include="mscorlib" />
+    <StubJarLib Include="System" />
+    <StubJarLib Include="System.Core" />
+    <StubJarLib Include="System.Collections" />
+    <StubJarLib Include="System.ComponentModel.TypeConverter" />
+    <StubJarLib Include="System.Data" />
+    <StubJarLib Include="System.Drawing" />
+    <StubJarLib Include="System.Drawing.Primitives" />
+    <StubJarLib Include="System.Private.CoreLib" />
+    <StubJarLib Include="System.Private.Xml" />
+    <StubJarLib Include="System.Xml" />
+  </ItemGroup>
+  
+  <Target Name="JdkStubGen">
+    <CallTarget Targets="JdkStubClean" />
+    <Exec Command="..\bin\netcoreapp3.1\ikvmstub.exe -bootstrap %(StubJarLib.Identity)" />
+  </Target>
+  
+  <Target Name="JdkStubClean">
+    <Delete Files="%(StubJarLib.Identity).jar" />
+  </Target>
+  
+  <!-- System.Core Gen -->
+  <Target Name="SystemCoreGen">
+    <Exec Command="systemcoregen\bin\$(Configuration)\netcoreapp3.1\systemcoregen.exe" />
+  </Target>
+  
+  <Target Name="SystemCoreClean">
+    <Delete Files="System.Core.dll" />
+  </Target>
+  
+  <!-- Runtime identity -->
+  <PropertyGroup>
+    <IkvmRuntimeId>IKVM.Runtime</IkvmRuntimeId>
+    <IkvmAwtId>IKVM.AWT.WinForms</IkvmAwtId>
+    <IkvmAwtAssembly>IKVM.AWT.WinForms</IkvmAwtAssembly>
+    <IkvmVersion>8.2.0.0</IkvmVersion>
+    <IkvmCopyright>Copyright (c) 2015-2019 IKVM.NET authors</IkvmCopyright>
+  </PropertyGroup>
+  
+  <!-- AssemblyInfo.java Gen -->
+  <Target Name="AssemblyInfoJavaGen">
+    <TokenReplace Path="AssemblyInfo.java.in" OutputPath="AssemblyInfo.java" Token="@VERSION@" Replacement="$(IkvmVersion)" />
+    <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@RUNTIME@" Replacement="$(IkvmRuntimeId)" />
+    <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@AWTWINFORMS@" Replacement="$(IkvmAwtId)" />
+    <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@COPYRIGHT@" Replacement="$(IkvmCopyright)" />
+  </Target>
+  
+  <Target Name="AssemblyInfoJavaClean">
+    <Delete Files="AssemblyInfo.java" />
+  </Target>
+  
+  <!-- PropertyConstants.java Gen -->
+  <Target Name="PropertyConstantsJavaGen">
+    <TokenReplace Path="java/lang/PropertyConstants.java.in" OutputPath="java/lang/PropertyConstants.java" Token="@AWTASSEMBLY@" Replacement="$(IkvmAwtAssembly)" />
+    <TokenReplace Path="java/lang/PropertyConstants.java" OutputPath="java/lang/PropertyConstants.java" Token="@VERSION@" Replacement="$(IkvmVersion)" />
+    <TokenReplace Path="java/lang/PropertyConstants.java" OutputPath="java/lang/PropertyConstants.java" Token="@OPENJDK_VERSION@" Replacement="$(OpenJdkVersion)" />
+  </Target>
+  
+  <Target Name="PropertyConstantsJavaClean">
+    <Delete Files="java/lang/PropertyConstants.java" />
+  </Target>
+  
+  <!-- OpenJDK build task -->
+  <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
+    <CallTarget Targets="SystemCoreGen" />
+    <CallTarget Targets="JdkStubGen" />
     <CallTarget Targets="SourceListGen" />
+    <CallTarget Targets="AssemblyInfoJavaGen" />
+    <CallTarget Targets="PropertyConstantsJavaGen" />
+  </Target>
+  
+  <Target Name="OpenJdkClean" AfterTargets="Clean">
+    <CallTarget Targets="SourceListClean" />
+    <CallTarget Targets="JdkStubClean" />
+    <CallTarget Targets="SystemCoreClean" />
+    <CallTarget Targets="AssemblyInfoJavaClean" />
+    <CallTarget Targets="PropertyConstantsJavaClean" />
   </Target>
   
 </Project>
