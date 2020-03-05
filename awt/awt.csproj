@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>TRACE;DNC</DefineConstants>
+    <AssemblyName>IKVM.AWT.WinForms</AssemblyName>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IKVM_FinalPass)' != 'true'">
+    <DefineConstants>TRACE;DNC;FIRST_PASS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../CommonAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IKVM_FinalPass)' != 'true'">
+    <Compile Remove="composite.cs" />
+    <Compile Remove="converter.cs" />
+    <Compile Remove="fonts-0.95.cs" />
+    <Compile Remove="graphics.cs" />
+    <Compile Remove="IconFactory.cs" />
+    <Compile Remove="images.cs" />
+    <Compile Remove="robot.cs" />
+    <Compile Remove="printing.cs" />
+    <Compile Remove="toolkit-0.95.cs" />
+  </ItemGroup>
+
+</Project>

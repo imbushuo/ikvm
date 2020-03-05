@@ -29,6 +29,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IKVM.Runtime", "..\runtime\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dummy.OpenJDK.Core", "..\openjdkstub\Dummy.OpenJDK.Core.csproj", "{F7B79F0D-E4E2-478E-AE9F-7667E9BE9CB5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Awt", "Awt", "{F3F642BF-81FC-4EB4-B864-7AE285EA9830}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "awt", "..\awt\awt.csproj", "{33350603-ADDF-4453-8CF4-8894FA742CF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,10 @@ Global
 		{F7B79F0D-E4E2-478E-AE9F-7667E9BE9CB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7B79F0D-E4E2-478E-AE9F-7667E9BE9CB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7B79F0D-E4E2-478E-AE9F-7667E9BE9CB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33350603-ADDF-4453-8CF4-8894FA742CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33350603-ADDF-4453-8CF4-8894FA742CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33350603-ADDF-4453-8CF4-8894FA742CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33350603-ADDF-4453-8CF4-8894FA742CF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +98,7 @@ Global
 		{2BF3409C-BCC9-4C1F-9593-61F118421A30} = {0C561B85-3F1F-4944-B883-7946B29B205D}
 		{E8CA8BCE-1D3A-4133-AB07-6D65133C6C93} = {0C561B85-3F1F-4944-B883-7946B29B205D}
 		{F7B79F0D-E4E2-478E-AE9F-7667E9BE9CB5} = {0C561B85-3F1F-4944-B883-7946B29B205D}
+		{33350603-ADDF-4453-8CF4-8894FA742CF9} = {F3F642BF-81FC-4EB4-B864-7AE285EA9830}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2D51CF3-9C19-434E-870C-0DF5C1858B16}
