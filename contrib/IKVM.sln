@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JDK", "JDK", "{680A452F-7C1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "systemcoregen", "..\openjdk\systemcoregen\systemcoregen.csproj", "{7F3956F4-9EFB-44A6-8DC1-AF00EE2D516E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "openjdk", "..\openjdk\openjdk.csproj", "{92628152-0D38-41A3-9418-DCB0037B3AF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{7F3956F4-9EFB-44A6-8DC1-AF00EE2D516E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F3956F4-9EFB-44A6-8DC1-AF00EE2D516E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F3956F4-9EFB-44A6-8DC1-AF00EE2D516E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92628152-0D38-41A3-9418-DCB0037B3AF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92628152-0D38-41A3-9418-DCB0037B3AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92628152-0D38-41A3-9418-DCB0037B3AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92628152-0D38-41A3-9418-DCB0037B3AF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{33350603-ADDF-4453-8CF4-8894FA742CF9} = {F3F642BF-81FC-4EB4-B864-7AE285EA9830}
 		{681449B9-0DD0-4DB0-B747-3590032063B4} = {8365582F-E69E-4D3A-B1B9-47DA289416E4}
 		{7F3956F4-9EFB-44A6-8DC1-AF00EE2D516E} = {680A452F-7C14-4881-A89A-6CB3755FB4DA}
+		{92628152-0D38-41A3-9418-DCB0037B3AF2} = {680A452F-7C14-4881-A89A-6CB3755FB4DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2D51CF3-9C19-434E-870C-0DF5C1858B16}

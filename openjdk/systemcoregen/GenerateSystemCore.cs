@@ -32,8 +32,6 @@ class GenerateSystemCore
 	{
 		Universe universe = new Universe();
 		AssemblyName name = new AssemblyName("System.Core");
-		name.Version = new Version(3, 5);
-		name.SetPublicKey(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
 		AssemblyBuilder ab = universe.DefineDynamicAssembly(name, AssemblyBuilderAccess.Save);
 		ModuleBuilder modb = ab.DefineDynamicModule("System.Core", "System.Core.dll");
 		TypeBuilder tb = modb.DefineType("System.Runtime.CompilerServices.ExtensionAttribute", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, universe.Import(typeof(Attribute)));

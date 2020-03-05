@@ -242,3 +242,12 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /external
+
+# Java
+*.jar
+
+# Generated list
+*.gen.lst
+
+# Launch Settings
+launchSettings.json

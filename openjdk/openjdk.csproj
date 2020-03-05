@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- OpenJDK config -->
+  <PropertyGroup>
+    <OpenJdkVersion>OpenJDK 8u45 b14</OpenJdkVersion>
+    <OpenJdkDir>../../openjdk-8u45-b14</OpenJdkDir>
+    <JavaImplVersion>1.8.0</JavaImplVersion>
+    <JavaSpecVersion>1.8.0</JavaSpecVersion>
+    <JavaFullVersion>1.8.0_45-b14</JavaFullVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  
+  <!-- OpenJDK tools dependency -->
+  <ItemGroup>
+    <ProjectReference Include="..\tools\depcheck\depcheck.csproj" />
+    <ProjectReference Include="..\tools\implib\implib.csproj" />
+    <ProjectReference Include="..\tools\licenseanalyzer\licenseanalyzer.csproj" />
+    <ProjectReference Include="..\tools\pubkey\pubkey.csproj" />
+    <ProjectReference Include="..\tools\updbaseaddress\updbaseaddress.csproj" />
+    <ProjectReference Include="..\tools\writeappconfig\writeappconfig.csproj" />
+    <ProjectReference Include="systemcoregen\systemcoregen.csproj" />
+  </ItemGroup>
+  
+  <!-- Tools -->
+  <UsingTask TaskName="TokenReplace" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Path ParameterType="System.String" Required="true" />
+      <OutputPath ParameterType="System.String" Required="true" />
+      <Token ParameterType="System.String" Required="true" />
+      <Replacement ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        string content = File.ReadAllText(Path);
+        content = content.Replace(Token, Replacement);
+        File.WriteAllText(OutputPath, content);
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
+  <!-- FileList -->
+  <Target Name="SourceListGen">
+    <TokenReplace Path="allsources.lst" OutputPath="allsources.gen.lst" Token="@OPENJDK@" Replacement="$(OpenJdkDir)" />
+  </Target>
+
+  <Target Name="OpenJdkGen" BeforeTargets="PrepareForBuild">
+    <CallTarget Targets="SourceListGen" />
+  </Target>
+  
+</Project>
