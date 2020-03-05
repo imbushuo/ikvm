@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>TRACE;STUB_GENERATOR;DNC</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpZipLib" Version="1.2.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <ProjectReference Include="..\reflect\IKVM.Reflection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="../CommonAssemblyInfo.cs" />
+    <Compile Include="../ikvmc/AssemblyResolver.cs" />
+    <Compile Include="../runtime/AssemblyClassLoader.cs" />
+    <Compile Include="../runtime/attributes.cs" />
+    <Compile Include="../runtime/ClassLoaderWrapper.cs" />
+    <Compile Include="../runtime/CoreClasses.cs" />
+    <Compile Include="../runtime/DotNetTypeWrapper.cs" />
+    <Compile Include="../runtime/JavaException.cs" />
+    <Compile Include="../runtime/MemberWrapper.cs" />
+    <Compile Include="../runtime/profiler.cs" />
+    <Compile Include="../runtime/ReflectUtil.cs" />
+    <Compile Include="../runtime/tracer.cs" />
+    <Compile Include="../runtime/Types.cs" />
+    <Compile Include="../runtime/TypeWrapper.cs" />
+    <Compile Include="../runtime/vm.cs" />
+    <Compile Include="../runtime/stubgen/ClassFileWriter.cs" />
+    <Compile Include="../runtime/stubgen/SerialVersionUID.cs" />
+    <Compile Include="../runtime/stubgen/StubGenerator.cs" />
+  </ItemGroup>
+
+</Project>
