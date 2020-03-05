@@ -29,6 +29,7 @@ using System.Text;
 using System.Diagnostics;
 using IKVM.Reflection.Reader;
 using IKVM.Reflection.Emit;
+using System.Linq;
 
 namespace IKVM.Reflection
 {
@@ -757,6 +758,21 @@ namespace IKVM.Reflection
 			return null;
 		}
 
+#if DNC
+		private System.Reflection.Assembly GetDncCoreAssembly()
+		{
+			// Try to probe where we get the current mscorlib from
+			var msCorLibAssemblyQuery = AppDomain.CurrentDomain.GetAssemblies().Where(i => i.FullName.Contains("System.Private.CoreLib"));
+			if (!msCorLibAssemblyQuery.Any())
+			{
+				throw new Exception("Cannot proceed under .NET Core");
+			}
+
+			var msCorLibAssembly = msCorLibAssemblyQuery.First();
+			return msCorLibAssembly;
+		}
+#endif
+
 		private Assembly DefaultResolver(string refname, bool throwOnError)
 		{
 			Assembly asm = GetDynamicAssembly(refname);
@@ -773,9 +789,25 @@ namespace IKVM.Reflection
 				try
 				{
 #if DNC
+					// Try to probe where we get the current mscorlib from
+					var msCorLibAssembly = GetDncCoreAssembly();
+
 					using (var tl = new System.Reflection.TypeLoader())
 					{
-						var a = tl.LoadFromAssemblyPath(refname);
+						var coreAssemblyLocation = Path.GetDirectoryName(msCorLibAssembly.Location);
+
+						tl.Resolving +=
+							delegate (System.Reflection.TypeLoader sender, System.Reflection.AssemblyName assemblyName)
+							{
+								string simpleName = assemblyName.Name;
+								string path = Path.Combine(coreAssemblyLocation, simpleName + ".dll");
+								if (!File.Exists(path)) return null;  // Don't throw an exception if the assembly doesn't exist. Return null.
+								return sender.LoadFromAssemblyPath(path);
+							};
+
+						tl.CoreAssemblyName = msCorLibAssembly.FullName;
+
+						var a = tl.LoadFromAssemblyName(refname);
 						fileName = a.Location;
 					}
 #else
@@ -792,9 +824,25 @@ namespace IKVM.Reflection
 				try
 				{
 #if DNC
+					// Try to probe where we get the current mscorlib from
+					var msCorLibAssembly = GetDncCoreAssembly();
+
 					using (var tl = new System.Reflection.TypeLoader())
 					{
-						var a = tl.LoadFromAssemblyPath(refname);
+						var coreAssemblyLocation = Path.GetDirectoryName(msCorLibAssembly.Location);
+
+						tl.Resolving +=
+							delegate (System.Reflection.TypeLoader sender, System.Reflection.AssemblyName assemblyName)
+							{
+								string simpleName = assemblyName.Name;
+								string path = Path.Combine(coreAssemblyLocation, simpleName + ".dll");
+								if (!File.Exists(path)) return null;  // Don't throw an exception if the assembly doesn't exist. Return null.
+								return sender.LoadFromAssemblyPath(path);
+							};
+
+						tl.CoreAssemblyName = msCorLibAssembly.FullName;
+
+						var a = tl.LoadFromAssemblyName(refname);
 						fileName = a.Location;
 					}
 #else
