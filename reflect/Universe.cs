@@ -772,7 +772,15 @@ namespace IKVM.Reflection
 			{
 				try
 				{
+#if DNC
+					using (var tl = new System.Reflection.TypeLoader())
+					{
+						var a = tl.LoadFromAssemblyPath(refname);
+						fileName = a.Location;
+					}
+#else
 					fileName = System.Reflection.Assembly.ReflectionOnlyLoad(refname).Location;
+#endif
 				}
 				catch (System.BadImageFormatException x)
 				{
@@ -783,7 +791,15 @@ namespace IKVM.Reflection
 			{
 				try
 				{
+#if DNC
+					using (var tl = new System.Reflection.TypeLoader())
+					{
+						var a = tl.LoadFromAssemblyPath(refname);
+						fileName = a.Location;
+					}
+#else
 					fileName = System.Reflection.Assembly.ReflectionOnlyLoad(refname).Location;
+#endif
 				}
 				catch (System.BadImageFormatException x)
 				{
@@ -798,7 +814,7 @@ namespace IKVM.Reflection
 			}
 			return LoadFile(fileName);
 #endif
-		}
+				}
 
 		public Type GetType(string assemblyQualifiedTypeName)
 		{
@@ -919,7 +935,7 @@ namespace IKVM.Reflection
 		// this is equivalent to the Fusion CompareAssemblyIdentity API
 		public bool CompareAssemblyIdentity(string assemblyIdentity1, bool unified1, string assemblyIdentity2, bool unified2, out AssemblyComparisonResult result)
 		{
-#if CORECLR
+#if CORECLR || DNC
 			return Fusion.CompareAssemblyIdentityPure(assemblyIdentity1, unified1, assemblyIdentity2, unified2, out result);
 #else
 			return useNativeFusion

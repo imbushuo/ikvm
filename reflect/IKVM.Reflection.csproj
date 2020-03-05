@@ -16,7 +16,9 @@
   <ItemGroup>
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="1.8.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.TypeLoader" Version="0.1.2-alpha.20119.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.7.0" />
   </ItemGroup>
 
