@@ -1550,9 +1550,13 @@ namespace IKVM.Internal
 		internal virtual void ResolveField()
 		{
 			FieldBuilder fb = field as FieldBuilder;
-			if(fb != null)
+			if (fb != null)
 			{
+#if !DNC
 				field = fb.Module.ResolveField(fb.GetToken().Token);
+#else
+				field = fb.Module.ResolveField(fb.MetadataToken);
+#endif
 			}
 		}
 
@@ -1574,7 +1578,7 @@ namespace IKVM.Internal
 		internal abstract void SetValue(object obj, object value);
 #endif
 #endif // !STATIC_COMPILER && !STUB_GENERATOR
-	}
+			}
 
 	sealed class SimpleFieldWrapper : FieldWrapper
 	{

@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>TRACE;DNC;NET_4_0;CLASSGC;EMITTERS</DefineConstants>
+    <BaseAddress>0x55000000</BaseAddress>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IKVM_FinalPass)' != 'true'">
+    <NoWarn>1701;1702;169;649</NoWarn>
+    <DefineConstants>TRACE;DNC;NET_4_0;CLASSGC;EMITTERS;FIRST_PASS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../CommonAssemblyInfo.cs" />
+    <Compile Remove="JniAssemblyInfo.cs" />
+    <Compile Remove="JniInterface.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lokad.ILPack" Version="0.1.3" />
+    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="1.7.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.7.0" />
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Condition="'$(IKVM_FinalPass)' != 'true'" Include="..\openjdkstub\Dummy.OpenJDK.Core.csproj" />
+  </ItemGroup>  
+  
+  </Project>

@@ -44,7 +44,7 @@ static class DynamicMethodUtils
 			if (dynamicModule == null)
 			{
 				// we have to create a module that is security critical to hold the dynamic method, if we want to be able to emit unverifiable code
-				AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("<DynamicMethodHolder>"), AssemblyBuilderAccess.RunAndCollect);
+				AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("<DynamicMethodHolder>"), AssemblyBuilderAccess.RunAndCollect);
 				Interlocked.CompareExchange(ref dynamicModule, ab.DefineDynamicModule("<DynamicMethodHolder>"), null);
 			}
 			return new DynamicMethod(name, MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, returnType, paramTypes, dynamicModule, true);

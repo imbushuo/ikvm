@@ -33,9 +33,9 @@ using Type = IKVM.Reflection.Type;
 using System.Reflection;
 using System.Reflection.Emit;
 #endif
-using System.Runtime.InteropServices;
 using System.Diagnostics.SymbolStore;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace IKVM.Internal
 {
@@ -91,7 +91,9 @@ namespace IKVM.Internal
 			local = ilgen.DeclareLocal(type);
 			if (name != null)
 			{
+#if !DNC
 				local.SetLocalSymInfo(name);
+#endif
 			}
 		}
 	}
@@ -499,7 +501,9 @@ namespace IKVM.Internal
 				case CodeType.ReleaseTempLocal:
 					break;
 				case CodeType.SequencePoint:
+#if !DNC
 					ilgen_real.MarkSequencePoint(symbols, (int)data, 0, (int)data + 1, 0);
+#endif
 					// we emit a nop to make sure we always have an instruction associated with the sequence point
 					ilgen_real.Emit(OpCodes.Nop);
 					break;
@@ -628,7 +632,7 @@ namespace IKVM.Internal
 			else if (arg is CalliWrapper)
 			{
 				CalliWrapper args = (CalliWrapper)arg;
-				ilgen_real.EmitCalli(opcode, args.unmanagedCallConv, args.returnType, args.parameterTypes);
+				ilgen_real.EmitCalli(opcode, CallingConventions.Any, args.returnType, args.parameterTypes, new Type[0]);
 			}
 			else
 			{
@@ -2423,7 +2427,9 @@ namespace IKVM.Internal
 
 		internal void DefineSymbolDocument(ModuleBuilder module, string url, Guid language, Guid languageVendor, Guid documentType)
 		{
+#if !DNC
 			symbols = module.DefineDocument(url, language, languageVendor, documentType);
+#endif
 		}
 
 		internal CodeEmitterLocal UnsafeAllocTempLocal(Type type)

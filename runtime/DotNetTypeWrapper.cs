@@ -1461,10 +1461,12 @@ namespace IKVM.Internal
 						PermissionSet permSet;
 						if (MakeDeclSecurity(type, annotation, out action, out permSet))
 						{
+#if !DNC
 							tb.AddDeclarativeSecurity(action, permSet);
+#endif
 						}
 #endif
-					}
+						}
 					else
 					{
 						tb.SetCustomAttribute(MakeCustomAttributeBuilder(loader, annotation));
@@ -1483,10 +1485,12 @@ namespace IKVM.Internal
 						PermissionSet permSet;
 						if (MakeDeclSecurity(type, annotation, out action, out permSet))
 						{
+#if !DNC
 							mb.AddDeclarativeSecurity(action, permSet);
+#endif
 						}
 #endif
-					}
+						}
 					else
 					{
 						mb.SetCustomAttribute(MakeCustomAttributeBuilder(loader, annotation));

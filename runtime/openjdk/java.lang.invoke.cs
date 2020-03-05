@@ -546,7 +546,7 @@ static class Java_java_lang_invoke_MethodHandleNatives
 	}
 #endif
 
-	public static void setCallSiteTargetNormal(CallSite site, MethodHandle target)
+	public static void setCallSiteTargetNormal(java.lang.invoke.CallSite site, MethodHandle target)
 	{
 #if !FIRST_PASS
 		if (site.ics == null)
@@ -561,7 +561,7 @@ static class Java_java_lang_invoke_MethodHandleNatives
 #endif
 	}
 
-	public static void setCallSiteTargetVolatile(CallSite site, MethodHandle target)
+	public static void setCallSiteTargetVolatile(java.lang.invoke.CallSite site, MethodHandle target)
 	{
 		setCallSiteTargetNormal(site, target);
 	}

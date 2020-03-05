@@ -358,7 +358,7 @@ namespace IKVM.Internal
 					.SetImplementationFlags(MethodImplAttributes.Runtime);
 				MethodBuilder mb = tb.DefineMethod("Invoke", MethodAttributes.Public | MethodAttributes.NewSlot | MethodAttributes.Virtual, returnVoid ? Types.Void : genericParameters[genericParameters.Length - 1], parameterTypes);
 				mb.SetImplementationFlags(MethodImplAttributes.Runtime);
-				type = tb.CreateType();
+				type = tb.CreateTypeInfo().AsType();
 				delegates[index] = type;
 				return type;
 			}
@@ -390,10 +390,10 @@ namespace IKVM.Internal
 			}
 			if(unloadableContainer != null)
 			{
-				unloadableContainer.CreateType();
+				unloadableContainer.CreateTypeInfo().AsType();
 				foreach(TypeBuilder tb in unloadables.Values)
 				{
-					tb.CreateType();
+					tb.CreateTypeInfo().AsType();
 				}
 			}
 #if STATIC_COMPILER
@@ -402,7 +402,7 @@ namespace IKVM.Internal
 				proxiesContainer.CreateType();
 				foreach(TypeBuilder tb in proxies)
 				{
-					tb.CreateType();
+					tb.CreateTypeInfo().AsType();
 				}
 			}
 #endif // STATIC_COMPILER
@@ -432,15 +432,20 @@ namespace IKVM.Internal
 		private static void SaveDebugAssembly(AssemblyBuilder ab)
 		{
 			Console.Error.WriteLine("Saving '{0}'", ab.GetName().Name + ".dll");
+#if DNC
+			var generator = new Lokad.ILPack.AssemblyGenerator();
+			generator.GenerateAssembly(ab, ab.GetName().Name + ".dll");
+#else
 			ab.Save(ab.GetName().Name + ".dll");
+#endif
 		}
 
 		internal static ModuleBuilder CreateJniProxyModuleBuilder()
 		{
 			AssemblyName name = new AssemblyName();
 			name.Name = "jniproxy";
-			jniProxyAssemblyBuilder = DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave, null);
-			return jniProxyAssemblyBuilder.DefineDynamicModule("jniproxy.dll", "jniproxy.dll");
+			jniProxyAssemblyBuilder = DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndCollect, null);
+			return jniProxyAssemblyBuilder.DefineDynamicModule("jniproxy.dll");
 		}
 #endif
 
@@ -560,7 +565,7 @@ namespace IKVM.Internal
 			AssemblyBuilderAccess access;
 			if(JVM.IsSaveDebugImage)
 			{
-				access = AssemblyBuilderAccess.RunAndSave;
+				access = AssemblyBuilderAccess.RunAndCollect;
 			}
 #if CLASSGC
 			else if(JVM.classUnloading
@@ -585,7 +590,7 @@ namespace IKVM.Internal
 			bool debug = JVM.EmitSymbols;
 			CustomAttributeBuilder debugAttr = new CustomAttributeBuilder(typeof(DebuggableAttribute).GetConstructor(new Type[] { typeof(bool), typeof(bool) }), new object[] { true, debug });
 			assemblyBuilder.SetCustomAttribute(debugAttr);
-			ModuleBuilder moduleBuilder = JVM.IsSaveDebugImage ? assemblyBuilder.DefineDynamicModule(name.Name, name.Name + ".dll", debug) : assemblyBuilder.DefineDynamicModule(name.Name, debug);
+			ModuleBuilder moduleBuilder = JVM.IsSaveDebugImage ? assemblyBuilder.DefineDynamicModule(name.Name) : assemblyBuilder.DefineDynamicModule(name.Name);
 			moduleBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(IKVM.Attributes.JavaModuleAttribute).GetConstructor(Type.EmptyTypes), new object[0]));
 			return moduleBuilder;
 		}
@@ -593,7 +598,7 @@ namespace IKVM.Internal
 		private static AssemblyBuilder DefineDynamicAssembly(AssemblyName name, AssemblyBuilderAccess access, IEnumerable<CustomAttributeBuilder> assemblyAttributes)
 		{
 #if NET_4_0
-			return AppDomain.CurrentDomain.DefineDynamicAssembly(name, access, null, true, assemblyAttributes);
+			return AssemblyBuilder.DefineDynamicAssembly(name, access, assemblyAttributes);
 #else
 			return AppDomain.CurrentDomain.DefineDynamicAssembly(name, access, null, null, null, null, null, true, assemblyAttributes);
 #endif

@@ -4769,14 +4769,14 @@ namespace IKVM.Internal
 				Profiler.Enter("TypeBuilder.CreateType");
 				try
 				{
-					type = typeBuilder.CreateType();
+					type = typeBuilder.CreateTypeInfo().AsType();
 					if (nestedTypeBuilders != null)
 					{
 						ClassLoaderWrapper.LoadClassCritical("ikvm.internal.IntrinsicAtomicReferenceFieldUpdater").Finish();
 						ClassLoaderWrapper.LoadClassCritical("ikvm.internal.IntrinsicThreadLocal").Finish();
 						foreach (TypeBuilder tb in nestedTypeBuilders)
 						{
-							tb.CreateType();
+							tb.CreateTypeInfo().AsType();
 						}
 					}
 #if !STATIC_COMPILER
@@ -5749,7 +5749,7 @@ namespace IKVM.Internal
 				}
 
 				[SecurityCritical]
-				[SecurityTreatAsSafe]
+				[SecuritySafeCritical]
 				private static FieldInfo[] GetFieldList(Type type, string[] list)
 				{
 					if (JVM.SafeGetEnvironmentVariable("IKVM_DISABLE_TYPEBUILDER_HACK") != null || !IsSupportedVersion)
@@ -5774,7 +5774,7 @@ namespace IKVM.Internal
 				}
 
 				[SecurityCritical]
-				[SecurityTreatAsSafe]
+				[SecuritySafeCritical]
 				internal static void Process(DynamicTypeWrapper wrapper)
 				{
 					if (m_methodBuilder != null && methodBuilderFields != null && fieldBuilderFields != null)
@@ -5855,7 +5855,7 @@ namespace IKVM.Internal
 					CodeEmitter ilgen = CodeEmitter.Create(mb);
 					JniBuilder.Generate(context, ilgen, wrapper, mw, tb, classFile, m, args, true);
 					ilgen.DoEmit();
-					tb.CreateType();
+					tb.CreateTypeInfo().AsType();
 					for (int i = 0; i < argTypes.Length - 1; i++)
 					{
 						ilGenerator.EmitLdarg(i);
@@ -7019,10 +7019,12 @@ namespace IKVM.Internal
 		private int GetMethodBaseToken(MethodBase mb)
 		{
 			MethodBuilder mbld = mb as MethodBuilder;
+#if !DNC
 			if (mbld != null)
 			{
 				return mbld.GetToken().Token;
 			}
+#endif
 			return mb.MetadataToken;
 		}
 
