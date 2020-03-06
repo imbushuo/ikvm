@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <!-- OpenJDK config -->
   <PropertyGroup>
     <OpenJdkVersion>OpenJDK 8u45 b14</OpenJdkVersion>
@@ -8,6 +8,7 @@
     <JavaFullVersion>1.8.0_45-b14</JavaFullVersion>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   
   <!-- OpenJDK tools dependency -->
@@ -56,18 +57,47 @@
     <StubJarLib Include="System" />
     <StubJarLib Include="System.Core" />
     <StubJarLib Include="System.Collections" />
+    <StubJarLib Include="System.Collections.Specialized" />
+    <StubJarLib Include="System.Console" />
+    <StubJarLib Include="System.ComponentModel" />
     <StubJarLib Include="System.ComponentModel.TypeConverter" />
+    <StubJarLib Include="System.ComponentModel.Primitives" />
+    <StubjarLib Include="System.Configuration" />
+    <StubjarLib Include="System.Configuration.ConfigurationManager" />
     <StubJarLib Include="System.Data" />
     <StubJarLib Include="System.Drawing" />
     <StubJarLib Include="System.Drawing.Primitives" />
+    <StubJarLib Include="System.Drawing.Common" />
     <StubJarLib Include="System.Private.CoreLib" />
     <StubJarLib Include="System.Private.Xml" />
+    <StubJarLib Include="System.Private.Uri" />
     <StubJarLib Include="System.Xml" />
+    <StubJarLib Include="System.Runtime" />
+    <StubJarLib Include="System.Runtime.Extensions" />
+    <StubJarLib Include="System.Net.Primitives" />
+    <StubJarLib Include="System.Net.Sockets" />
+    <StubJarLib Include="System.IO" />
+    <StubJarLib Include="System.IO.FileSystem.Primitives" />
+    <StubJarLib Include="System.IO.FileSystem.AccessControl" />
+    <StubJarLib Include="System.IO.FileSystem.DriveInfo" />
+    <StubJarLib Include="System.IO.FileSystem.Watcher" />
+    <StubJarLib Include="System.IO.FileSystem" />
+    <StubJarLib Include="System.Diagnostics.Process" />
+    <StubJarLib Include="System.Diagnostics.FileVersionInfo" />
+    <StubJarLib Include="System.Diagnostics.StackTrace" />
+    <StubJarLib Include="System.Net" />
+    <StubJarLib Include="System.Net.NetworkInformation" />
+    <StubJarLib Include="System.Net.Mail" />
+    <StubJarLib Include="System.Security.AccessControl" />
+    <StubJarLib Include="System.Security.Permissions" />
+    <StubJarLib Include="Microsoft.Win32.Primitives" />
   </ItemGroup>
   
   <Target Name="JdkStubGen">
     <CallTarget Targets="JdkStubClean" />
-    <Exec Command="..\bin\netcoreapp3.1\ikvmstub.exe -bootstrap %(StubJarLib.Identity)" />
+    <Exec Command="ikvmstub.exe -bootstrap %(StubJarLib.Identity)" WorkingDirectory="..\bin\netcoreapp3.1" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\%(StubJarLib.Identity).jar" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Delete Files="..\bin\netcoreapp3.1\%(StubJarLib.Identity).jar" />
   </Target>
   
   <Target Name="JdkStubClean">
@@ -97,7 +127,7 @@
     <TokenReplace Path="AssemblyInfo.java.in" OutputPath="AssemblyInfo.java" Token="@VERSION@" Replacement="$(IkvmVersion)" />
     <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@RUNTIME@" Replacement="$(IkvmRuntimeId)" />
     <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@AWTWINFORMS@" Replacement="$(IkvmAwtId)" />
-    <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@COPYRIGHT@" Replacement="$(IkvmCopyright)" />
+    <TokenReplace Path="AssemblyInfo.java" OutputPath="AssemblyInfo.java" Token="@COPYRIGHT@" Replacement="&quot;$(IkvmCopyright)&quot;" />
   </Target>
   
   <Target Name="AssemblyInfoJavaClean">

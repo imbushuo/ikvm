@@ -31,7 +31,6 @@ namespace awt
 {
     public class ShellApi
     {
-
         public static Guid GUID_ISHELLFOLDER = new Guid("{000214E6-0000-0000-C000-000000000046}");
         public static Guid GUID_ISHELLFOLDER2 = new Guid("{93F2F68C-1D1B-11d3-A30E-00C04F79ABD1}");
 
