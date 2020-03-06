@@ -259,3 +259,5 @@ vfs.zip
 
 # Launch Settings
 launchSettings.json
+/openjdk/resources.zip
+/binikvmc/netcoreapp3.1

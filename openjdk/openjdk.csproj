@@ -2,7 +2,7 @@
   <!-- OpenJDK config -->
   <PropertyGroup>
     <OpenJdkVersion>OpenJDK 8u45 b14</OpenJdkVersion>
-    <OpenJdkDir>../../openjdk-8u45-b14</OpenJdkDir>
+    <OpenJdkDir>..\..\openjdk-8u45-b14</OpenJdkDir>
     <JavaImplVersion>1.8.0</JavaImplVersion>
     <JavaSpecVersion>1.8.0</JavaSpecVersion>
     <JavaFullVersion>1.8.0_45-b14</JavaFullVersion>
@@ -246,7 +246,59 @@
     <RemoveDir Directories="vfstemp" />
     <Delete Files="vfs.zip" />
   </Target>
+
+  <!-- Resources -->
+  <PropertyGroup>
+    <JdkClassResPath>$(OpenJdkDir)\build\linux-x86_64-normal-server-release\jdk\classes</JdkClassResPath>
+    <JdkCorbaResPath>$(OpenJdkDir)\corba\src\share\classes</JdkCorbaResPath>
+    <JdkMediaResPath>$(OpenJdkDir)\jdk\src\share\classes</JdkMediaResPath>
+    <JaxpResPath>$(OpenJdkDir)\jaxp\src</JaxpResPath>
+    <JafClassResPath>$(OpenJdkDir)\jaxws\src\share\jaf_classes</JafClassResPath>
+    <JawxsResPath>$(OpenJdkDir)\jaxws\src\share\jaxws_classes</JawxsResPath>
+    <ResourceTempDir>restemp</ResourceTempDir>
+  </PropertyGroup>
   
+  <Target Name="ResourcePack">    
+    <ItemGroup>
+      <ClassResItem Include="$(JdkClassResPath)/com/sun/corba/se/impl/orbutil/resources/*.properties" />
+      <ClassResItem Include="$(JdkClassResPath)/com/sun/rowset/*.properties" />
+      <ClassResItem Include="$(JdkClassResPath)/javax/swing/text/html/parser/html32.bdtd" />
+      <ClassResItem Include="$(JdkClassResPath)/sun/rmi/registry/resources/*.properties" />
+      <ClassResItem Include="$(JdkClassResPath)/sun/rmi/server/resources/*.properties" />
+      <ClassResItem Include="$(JdkClassResPath)/sun/text/resources/*IteratorData" />
+      <ClassResItem Include="$(JdkClassResPath)/sun/text/resources/th/*IteratorData_th" />
+      <ClassResItem Include="$(JdkClassResPath)/sun/text/resources/th/thai_dict" />
+      <CorbaResItem Include="$(JdkCorbaResPath)/**/*.properties" />
+      <MediaResItem Include="$(JdkMediaResPath)/**/*.png" />
+      <MediaResItem Include="$(JdkMediaResPath)/**/*.gif" />
+      <MediaResItem Include="$(JdkMediaResPath)/**/*.wav" />
+      <MediaResItem Include="$(JdkMediaResPath)/com/sun/org/apache/xml/internal/security/resource/config.*" />
+      <MediaResItem Include="$(JdkMediaResPath)/com/sun/swing/internal/plaf/**/*" />
+      <MediaResItem Include="$(JdkMediaResPath)/javax/swing/text/html/default.css" />
+      <MediaResItem Include="$(JdkMediaResPath)/javax/swing/text/rtf/charsets/*.txt" />
+      <MediaResItem Include="$(JdkMediaResPath)/sun/text/resources/**/*.icu" />
+      <JaxpResItem Include="$(JaxpResPath)/**/*.properties" />
+      <JaxpResItem Include="$(JaxpResPath)/**/*.res" />
+      <JafClassResItem Include="$(JafClassResPath)/**/*.properties" />
+      <JawxsResItem Include="$(JawxsResPath)/**/*.properties" />
+      <JawxsResItem Include="$(JawxsResPath)/**/*.xml" />
+    </ItemGroup>
+    <MakeDir Directories="$(ResourceTempDir)" />
+    <Copy SourceFiles="@(ClassResItem)" DestinationFolder="$(ResourceTempDir)\$([System.String]::Copy('%(ClassResItem.RelativeDir)').Replace('$(JdkClassResPath)\',''))" />
+    <Copy SourceFiles="@(CorbaResItem)" DestinationFolder="$(ResourceTempDir)\$([System.String]::Copy('%(CorbaResItem.RelativeDir)').Replace('$(JdkCorbaResPath)\',''))" />
+    <Copy SourceFiles="@(MediaResItem)" DestinationFolder="$(ResourceTempDir)\$([System.String]::Copy('%(MediaResItem.RelativeDir)').Replace('$(JdkMediaResPath)\',''))" />
+    <Copy SourceFiles="@(JaxpResItem)" DestinationFolder="$(ResourceTempDir)\$([System.String]::Copy('%(JaxpResItem.RelativeDir)').Replace('$(JaxpResPath)\',''))" />
+    <Copy SourceFiles="@(JafClassResItem)" DestinationFolder="$(ResourceTempDir)\$([System.String]::Copy('%(JafClassResItem.RelativeDir)').Replace('$(JafClassResPath)\',''))" />
+    <Copy SourceFiles="@(JawxsResItem)" DestinationFolder="$(ResourceTempDir)\$([System.String]::Copy('%(JawxsResItem.RelativeDir)').Replace('$(JawxsResPath)\',''))" />
+    <ZipDirectory SourceDirectory="$(ResourceTempDir)" DestinationFile="resources.zip" Overwrite="true" />
+    <RemoveDir Directories="$(ResourceTempDir)" />
+  </Target>
+
+  <Target Name="CleanResourcePack">
+    <RemoveDir Directories="$(ResourceTempDir)" />
+    <Delete Files="resources.zip" />
+  </Target>
+
   <!-- Final pass transformation -->
   <Target Name="FinalPassGen">
     <Delete Files="response.gen.txt" />
@@ -281,6 +333,7 @@
     <CallTarget Targets="RmiGen" />
     <CallTarget Targets="NasGen" />
     <CallTarget Targets="Vfs" />
+    <CallTarget Targets="ResourcePack" />
     <CallTarget Targets="FinalPassGen" />
   </Target>
   
@@ -293,6 +346,7 @@
     <!-- This also cleans RMI -->
     <CallTarget Targets="CleanJavaC" />
     <CallTarget Targets="CleanVfs" />
+    <CallTarget Targets="CleanResourcePack" />
     <CallTarget Targets="FinalPassClean" />
   </Target>
 </Project>
