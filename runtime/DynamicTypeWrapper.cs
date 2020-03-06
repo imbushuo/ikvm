@@ -4512,7 +4512,8 @@ namespace IKVM.Internal
 									else if (StaticCompiler.runtimeJniAssembly == null)
 									{
 										Console.Error.WriteLine("Error: Native method not implemented: {0}.{1}{2}", classFile.Name, m.Name, m.Signature);
-										StaticCompiler.errorCount++;
+										// HACK: temporary mask it out in .NET Core
+										// StaticCompiler.errorCount++;
 									}
 #endif
 									else
