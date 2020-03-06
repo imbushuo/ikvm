@@ -63,8 +63,8 @@
     <StubJarLib Include="System.ComponentModel" />
     <StubJarLib Include="System.ComponentModel.TypeConverter" />
     <StubJarLib Include="System.ComponentModel.Primitives" />
-    <StubjarLib Include="System.Configuration" />
-    <StubjarLib Include="System.Configuration.ConfigurationManager" />
+    <StubJarLib Include="System.Configuration" />
+    <StubJarLib Include="System.Configuration.ConfigurationManager" />
     <StubJarLib Include="System.Data" />
     <StubJarLib Include="System.Data.Common" />
     <StubJarLib Include="System.Drawing" />
@@ -173,6 +173,44 @@
     </ItemGroup>
     <Delete Files="@(JavaClassFiles)" />
   </Target>
+
+  <!-- RMI -->
+  <ItemGroup Label="RmiItemsList">
+    <RmiItem Include="$(OpenJdkDir)/jdk/src/share/classes" />
+    <RmiItem Include="$(OpenJdkDir)/corba/src/share/classes" />
+    <RmiItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/gensrc" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <RmiClass>@(RmiItem, ';');@(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar;IKVM.ODBCStub.jar</RmiClass>
+    <RmiOutput>rmistubs</RmiOutput>
+    <RmiArgs>-J-client -J-Xmx896m -J-Xms128m -nowarn -bootclasspath $(RmiClass) -d $(RmiOutput)</RmiArgs>
+  </PropertyGroup>
+
+  <Target Name="RmiGen">
+    <MakeDir Directories="$(RmiOutput)" Condition="$(RmiOutput)!=''" />
+    <Exec Command="rmic $(RmiArgs) -v1.1 sun.rmi.registry.RegistryImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.1 sun.rmi.transport.DGCImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 sun.rmi.server.Activation$ActivationSystemImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 java.rmi.activation.ActivationGroup" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 com.sun.jndi.rmi.registry.ReferenceWrapper" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 javax.management.remote.rmi.RMIConnectionImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 -iiop javax.management.remote.rmi.RMIConnectionImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 -iiop -standardPackage javax.management.remote.rmi.RMIConnectionImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 javax.management.remote.rmi.RMIServerImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 -iiop javax.management.remote.rmi.RMIServerImpl" />
+    <Exec Command="rmic $(RmiArgs) -v1.2 -iiop -standardPackage javax.management.remote.rmi.RMIServerImpl" />
+    <Exec Command="rmic $(RmiArgs) -iiop javax.management.remote.rmi.RMIConnection" />
+    <Exec Command="rmic $(RmiArgs) -iiop -standardPackage javax.management.remote.rmi.RMIConnection" />
+    <Exec Command="rmic $(RmiArgs) -iiop javax.management.remote.rmi.RMIServer" />
+    <Exec Command="rmic $(RmiArgs) -iiop -standardPackage javax.management.remote.rmi.RMIServer" />
+  </Target>
+  
+  <!-- NasGen -->
+  <Target Name="NasGen">
+    <Exec Command="javac -XDignore.symbol.file -g -nowarn -implicit:none -bootclasspath $(RmiClass);$(OpenJdkDir)/nashorn/src $(OpenJdkDir)/nashorn/src/jdk/nashorn/internal/objects/*.java" />
+    <Exec Command="java -Xbootclasspath/p:&quot;$(OpenJdkDir)/nashorn/buildtools/nasgen/src&quot;;&quot;$(OpenJdkDir)/nashorn/src&quot; jdk.nashorn.internal.tools.nasgen.Main &quot;$(OpenJdkDir)/nashorn/src&quot; jdk.nashorn.internal.objects &quot;$(OpenJdkDir)/nashorn/src&quot;" />
+  </Target>
   
   <!-- OpenJDK build task -->
   <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
@@ -182,6 +220,8 @@
     <CallTarget Targets="AssemblyInfoJavaGen" />
     <CallTarget Targets="PropertyConstantsJavaGen" />
     <CallTarget Targets="CallJavaC" />
+    <CallTarget Targets="RmiGen" />
+    <CallTarget Targets="NasGen" />
   </Target>
   
   <Target Name="OpenJdkClean" AfterTargets="Clean">
@@ -190,6 +230,7 @@
     <CallTarget Targets="SystemCoreClean" />
     <CallTarget Targets="AssemblyInfoJavaClean" />
     <CallTarget Targets="PropertyConstantsJavaClean" />
+    <!-- This also cleans RMI -->
     <CallTarget Targets="CleanJavaC" />
   </Target>
 </Project>
