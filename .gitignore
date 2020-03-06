@@ -247,6 +247,9 @@ ModelManifest.xml
 *.jar
 *.class
 
+# OpenJDK
+vfs.zip
+
 # Generated dll
 *.dll
 

@@ -169,7 +169,7 @@
 
   <Target Name="CleanJavaC">
     <ItemGroup>
-      <JavaClassFiles Include="**\*.class"/>
+      <JavaClassFiles Include="**\*.class" />
     </ItemGroup>
     <Delete Files="@(JavaClassFiles)" />
   </Target>
@@ -212,6 +212,41 @@
     <Exec Command="java -Xbootclasspath/p:&quot;$(OpenJdkDir)/nashorn/buildtools/nasgen/src&quot;;&quot;$(OpenJdkDir)/nashorn/src&quot; jdk.nashorn.internal.tools.nasgen.Main &quot;$(OpenJdkDir)/nashorn/src&quot; jdk.nashorn.internal.objects &quot;$(OpenJdkDir)/nashorn/src&quot;" />
   </Target>
   
+  <!-- VFS -->
+  <Target Name="Vfs">
+    <MakeDir Directories="vfstemp" />
+    <MakeDir Directories="vfstemp/lib" />
+    <MakeDir Directories="vfstemp/lib/cmm" />
+
+    <ItemGroup Label="VfsLibInclude">
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/calendars.properties" />
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/logging.properties" />
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/net.properties" />
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/psfontj2d.properties" />
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/sound.properties" />
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/tzdb.dat" />
+      <VfsItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/currency.data" />
+      <VfsItem Include="$(OpenJdkDir)/jdk/src/windows/lib/flavormap.properties" />
+      <VfsItem Include="$(OpenJdkDir)/jdk/src/windows/lib/content-types.properties" />
+      <VfsMgmtItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/management/management.properties" />
+      <VfsCmmItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/cmm/*" />
+      <VfsSecItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/security/java.policy" />
+      <VfsSecItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/security/java.security" />
+      <VfsSecItem Include="$(OpenJdkDir)/build/linux-x86_64-normal-server-release/jdk/lib/security/US_export_policy.jar" />
+    </ItemGroup>
+    <Copy SourceFiles="@(VfsItem)" DestinationFolder="vfstemp/lib" />
+    <Copy SourceFiles="@(VfsCmmItem)" DestinationFolder="vfstemp/lib/cmm" />
+    <Copy SourceFiles="@(VfsSecItem)" DestinationFolder="vfstemp/lib/security" />
+    <Copy SourceFiles="@(VfsMgmtItem)" DestinationFolder="vfstemp/lib/management" />
+    <ZipDirectory SourceDirectory="vfstemp" DestinationFile="vfs.zip" Overwrite="true" />
+    <RemoveDir Directories="vfstemp" />
+  </Target>
+  
+  <Target Name="CleanVfs">
+    <RemoveDir Directories="vfstemp" />
+    <Delete Files="vfs.zip" />
+  </Target>
+  
   <!-- OpenJDK build task -->
   <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
     <CallTarget Targets="SystemCoreGen" />
@@ -222,6 +257,7 @@
     <CallTarget Targets="CallJavaC" />
     <CallTarget Targets="RmiGen" />
     <CallTarget Targets="NasGen" />
+    <CallTarget Targets="Vfs" />
   </Target>
   
   <Target Name="OpenJdkClean" AfterTargets="Clean">
@@ -232,5 +268,6 @@
     <CallTarget Targets="PropertyConstantsJavaClean" />
     <!-- This also cleans RMI -->
     <CallTarget Targets="CleanJavaC" />
+    <CallTarget Targets="CleanVfs" />
   </Target>
 </Project>
