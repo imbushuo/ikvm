@@ -674,6 +674,11 @@ sealed class InstructionState
 		// is an interface or array of interfaces, any reference will be accepted
 		if(!baseType.IsUnloadable && !baseType.IsInterfaceOrInterfaceArray && !(type.IsUnloadable || type.IsAssignableTo(baseType)))
 		{
+			// Double check
+			if (baseType?.TypeAsTBD != null && type?.TypeAsTBD != null && baseType.TypeAsTBD.IsAssignableFrom(type.TypeAsTBD))
+			{
+				return type;
+			}
 			throw new VerifyError("Unexpected type " + type.Name + " where " + baseType.Name + " was expected");
 		}
 		return type;
@@ -797,6 +802,11 @@ sealed class InstructionState
 		}
 		// Hack: EndPoint & IPEndPoint
 		else if (baseType.TypeAsTBD.IsAssignableFrom(type.TypeAsTBD))
+		{
+			return type;
+		}
+		// Hack: let it go
+		else if (type.Name == "cli.System.Object")
 		{
 			return type;
 		}
@@ -2507,7 +2517,11 @@ sealed class MethodAnalyzer
 						!targetType.IsUnloadable &&
 						!refType.IsAssignableTo(targetType))
 					{
-						throw new VerifyError("Incompatible object argument for function call");
+						if (refType?.TypeAsTBD == null || targetType?.TypeAsTBD == null ||
+							!targetType.TypeAsTBD.IsAssignableFrom(refType.TypeAsTBD))
+						{
+							throw new VerifyError("Incompatible object argument for function call");
+						}
 					}
 					// for invokespecial we also need to make sure we're calling ourself or a base class
 					if (invoke == NormalizedByteCode.__invokespecial)
@@ -2558,7 +2572,11 @@ sealed class MethodAnalyzer
 						&& !refType.IsAssignableTo(targetType)
 						&& !targetType.IsInterface)
 					{
-						throw new VerifyError("Incompatible object argument for function call");
+						if (refType?.TypeAsTBD == null || targetType?.TypeAsTBD == null ||
+							!targetType.TypeAsTBD.IsAssignableFrom(refType.TypeAsTBD))
+						{
+							throw new VerifyError("Incompatible object argument for function call");
+						}
 					}
 				}
 			}
