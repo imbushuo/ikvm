@@ -9,6 +9,10 @@
     <OutputPath>../bin</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="../CommonAssemblyInfo.cs" />
     <Compile Include="../runtime/AssemblyClassLoader.cs" />
@@ -45,7 +49,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpZipLib" Version="1.2.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
     <ProjectReference Include="..\reflect\IKVM.Reflection.csproj" />
   </ItemGroup>
 

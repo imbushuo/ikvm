@@ -1442,7 +1442,11 @@ namespace IKVM.Internal
 
 			private static void CheckLoaderConstraints(MethodWrapper mw, MethodWrapper baseMethod)
 			{
+#if STATIC_COMPILER
+				if (StaticCompiler.AssemblyQualifiedName(mw.ReturnType) != StaticCompiler.AssemblyQualifiedName(baseMethod.ReturnType))
+#else
 				if (mw.ReturnType != baseMethod.ReturnType)
+#endif
 				{
 					if (mw.ReturnType.IsUnloadable || baseMethod.ReturnType.IsUnloadable)
 					{
@@ -1470,7 +1474,11 @@ namespace IKVM.Internal
 				TypeWrapper[] there = baseMethod.GetParameters();
 				for (int i = 0; i < here.Length; i++)
 				{
+#if STATIC_COMPILER
+					if (StaticCompiler.AssemblyQualifiedName(here[i]) != StaticCompiler.AssemblyQualifiedName(there[i]))
+#else
 					if (here[i] != there[i])
+#endif
 					{
 						if (here[i].IsUnloadable || there[i].IsUnloadable)
 						{

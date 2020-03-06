@@ -757,7 +757,11 @@ sealed class InstructionState
 		{
 			throw new VerifyError("Expecting to find object/array on stack");
 		}
-		if(type == baseType)
+#if STATIC_COMPILER
+		if (StaticCompiler.AssemblyQualifiedName(type) == StaticCompiler.AssemblyQualifiedName(baseType))
+#else
+		if (type == baseType)
+#endif
 		{
 			return type;
 		}
@@ -788,6 +792,11 @@ sealed class InstructionState
 			return type;
 		}
 		else if (type.IsAssignableTo(baseType))
+		{
+			return type;
+		}
+		// Hack: EndPoint & IPEndPoint
+		else if (baseType.TypeAsTBD.IsAssignableFrom(type.TypeAsTBD))
 		{
 			return type;
 		}
@@ -850,7 +859,7 @@ sealed class InstructionState
 		}
 		if(stackSize >= stackEnd)
 		{
-			throw new VerifyError("Stack overflow");
+			throw new VerifyError($"Stack overflow of type {type}, stackSize = {stackSize}, stackEnd = {stackEnd}");
 		}
 		StackCopyOnWrite();
 		stack[stackSize++] = type;
@@ -3861,7 +3870,12 @@ sealed class MethodAnalyzer
 				SetHardError(wrapper.GetClassLoader(), ref instr, HardError.NoSuchFieldError, "{0}.{1}", cpi.Class, cpi.Name);
 				return;
 			}
-			if(cpi.GetFieldType() != field.FieldTypeWrapper && !cpi.GetFieldType().IsUnloadable & !field.FieldTypeWrapper.IsUnloadable)
+#if STATIC_COMPILER
+			if (StaticCompiler.AssemblyQualifiedName(cpi.GetFieldType()) != StaticCompiler.AssemblyQualifiedName(field.FieldTypeWrapper)
+				&& !cpi.GetFieldType().IsUnloadable & !field.FieldTypeWrapper.IsUnloadable)
+#else
+			if (cpi.GetFieldType() != field.FieldTypeWrapper && !cpi.GetFieldType().IsUnloadable & !field.FieldTypeWrapper.IsUnloadable)
+#endif
 			{
 #if STATIC_COMPILER
 				StaticCompiler.LinkageError("Field \"{2}.{3}\" is of type \"{0}\" instead of type \"{1}\" as expected by \"{4}\"", field.FieldTypeWrapper, cpi.GetFieldType(), cpi.GetClassType().Name, cpi.Name, wrapper.Name);
@@ -3923,7 +3937,11 @@ sealed class MethodAnalyzer
 
 	private string CheckLoaderConstraints(ClassFile.ConstantPoolItemMI cpi, MethodWrapper mw)
 	{
-		if(cpi.GetRetType() != mw.ReturnType && !cpi.GetRetType().IsUnloadable && !mw.ReturnType.IsUnloadable)
+#if STATIC_COMPILER
+		if (StaticCompiler.AssemblyQualifiedName(cpi.GetRetType()) != StaticCompiler.AssemblyQualifiedName(mw.ReturnType) && !cpi.GetRetType().IsUnloadable && !mw.ReturnType.IsUnloadable)
+#else
+		if (cpi.GetRetType() != mw.ReturnType && !cpi.GetRetType().IsUnloadable && !mw.ReturnType.IsUnloadable)
+#endif
 		{
 #if STATIC_COMPILER
 			StaticCompiler.LinkageError("Method \"{2}.{3}{4}\" has a return type \"{0}\" instead of type \"{1}\" as expected by \"{5}\"", mw.ReturnType, cpi.GetRetType(), cpi.GetClassType().Name, cpi.Name, cpi.Signature, classFile.Name);
@@ -3934,7 +3952,11 @@ sealed class MethodAnalyzer
 		TypeWrapper[] there = mw.GetParameters();
 		for(int i = 0; i < here.Length; i++)
 		{
-			if(here[i] != there[i] && !here[i].IsUnloadable && !there[i].IsUnloadable)
+#if STATIC_COMPILER
+			if (StaticCompiler.AssemblyQualifiedName(here[i]) != StaticCompiler.AssemblyQualifiedName(there[i]) && !here[i].IsUnloadable && !there[i].IsUnloadable)
+#else
+			if (here[i] != there[i] && !here[i].IsUnloadable && !there[i].IsUnloadable)
+#endif
 			{
 #if STATIC_COMPILER
 				StaticCompiler.LinkageError("Method \"{2}.{3}{4}\" has a argument type \"{0}\" instead of type \"{1}\" as expected by \"{5}\"", there[i], here[i], cpi.GetClassType().Name, cpi.Name, cpi.Signature, classFile.Name);

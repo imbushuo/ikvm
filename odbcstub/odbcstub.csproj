@@ -1,8 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>IKVM.ODBCStub</AssemblyName>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>System.Data.Odbc</AssemblyName>
+    <AssemblyVersion>4.0.2.0</AssemblyVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Open.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
 </Project>

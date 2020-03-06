@@ -107,10 +107,10 @@
     <CallTarget Targets="JdkStubClean" />
     <Exec Command="ikvmstub.exe -bootstrap %(StubJarLib.Identity)" WorkingDirectory="..\bin\netcoreapp3.1" />
     <!-- ODBC stub is a special case -->
-    <Exec Command="ikvmstub.exe -bootstrap ..\..\odbcstub\bin\$(Configuration)\netstandard2.0\IKVM.ODBCStub.dll" WorkingDirectory="..\bin\netcoreapp3.1" />
-    <Copy SourceFiles="..\bin\netcoreapp3.1\IKVM.ODBCStub.jar" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Exec Command="ikvmstub.exe -bootstrap ..\..\odbcstub\bin\$(Configuration)\netstandard2.1\System.Data.Odbc.dll" WorkingDirectory="..\bin\netcoreapp3.1" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\System.Data.Odbc.jar" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
     <Copy SourceFiles="..\bin\netcoreapp3.1\%(StubJarLib.Identity).jar" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
-    <Delete Files="..\bin\netcoreapp3.1\IKVM.ODBCStub.jar" />
+    <Delete Files="..\bin\netcoreapp3.1\System.Data.Odbc.jar" />
     <Delete Files="..\bin\netcoreapp3.1\%(StubJarLib.Identity).jar" />
   </Target>
   
@@ -162,7 +162,7 @@
   
   <!-- OpenJDK Libraries -->
   <Target Name="CallJavaC">
-    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar;IKVM.ODBCStub.jar &quot;@allsources.gen.lst&quot;" />
+    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.1/IKVM.Runtime.jar;System.Data.Odbc.jar &quot;@allsources.gen.lst&quot;" />
     <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/sun/reflect/misc/Trampoline.class" />
     <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/java/lang/invoke/MethodHandleImpl$BindCaller$T.class" />
   </Target>
@@ -182,7 +182,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RmiClass>@(RmiItem, ';');@(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar;IKVM.ODBCStub.jar</RmiClass>
+    <RmiClass>@(RmiItem, ';');@(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.1/IKVM.Runtime.jar;IKVM.ODBCStub.jar</RmiClass>
     <RmiOutput>rmistubs</RmiOutput>
     <RmiArgs>-J-client -J-Xmx896m -J-Xms128m -nowarn -bootclasspath $(RmiClass) -d $(RmiOutput)</RmiArgs>
   </PropertyGroup>

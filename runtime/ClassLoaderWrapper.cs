@@ -137,6 +137,7 @@ namespace IKVM.Internal
 
 		static ClassLoaderWrapper()
 		{
+			var r = PrimitiveTypeWrapper.BOOLEAN;
 			globalTypeToTypeWrapper[PrimitiveTypeWrapper.BOOLEAN.TypeAsTBD] = PrimitiveTypeWrapper.BOOLEAN;
 			globalTypeToTypeWrapper[PrimitiveTypeWrapper.BYTE.TypeAsTBD] = PrimitiveTypeWrapper.BYTE;
 			globalTypeToTypeWrapper[PrimitiveTypeWrapper.CHAR.TypeAsTBD] = PrimitiveTypeWrapper.CHAR;

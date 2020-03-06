@@ -1982,7 +1982,7 @@ namespace IKVM.Internal
 					}
 					if (stackSize >= stackEnd)
 					{
-						throw new VerifyError("Stack overflow");
+						throw new VerifyError($"Stack overflow of type {type}, stackSize = {stackSize}, stackEnd = {stackEnd}");
 					}
 					StackCopyOnWrite();
 					stack[stackSize++] = type;

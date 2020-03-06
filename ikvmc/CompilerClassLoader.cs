@@ -4097,7 +4097,7 @@ namespace IKVM.Internal
 			throw new FatalCompilerErrorException(Message.LinkageError, str);
 		}
 
-		private static string AssemblyQualifiedName(TypeWrapper tw)
+		internal static string AssemblyQualifiedName(TypeWrapper tw)
 		{
 			ClassLoaderWrapper loader = tw.GetClassLoader();
 			AssemblyClassLoader acl = loader as AssemblyClassLoader;

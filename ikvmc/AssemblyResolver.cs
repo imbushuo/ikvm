@@ -245,6 +245,8 @@ namespace IKVM.Internal
 			}
 		}
 
+		private Dictionary<string, int> _repeatLoadCounter = new Dictionary<string, int>();
+
 		private Assembly AssemblyResolve(object sender, IKVM.Reflection.ResolveEventArgs args)
 		{
 			AssemblyName name = new AssemblyName(args.Name);
@@ -254,6 +256,14 @@ namespace IKVM.Internal
 			{
 				if (Match(asm.GetName(), name, ref previousMatch, ref previousMatchLevel))
 				{
+					if (previousMatch?.FullName != null)
+					{
+						if (_repeatLoadCounter.ContainsKey(previousMatch.FullName))
+						{
+							_repeatLoadCounter.Remove(previousMatch.FullName);
+						}
+					}
+					
 					return asm;
 				}
 			}
@@ -262,6 +272,20 @@ namespace IKVM.Internal
 				if (previousMatchLevel == 2)
 				{
 					EmitWarning(WarningId.HigherVersion, "assuming assembly reference \"{0}\" matches \"{1}\", you may need to supply runtime policy", previousMatch.FullName, name.FullName);
+					if (_repeatLoadCounter.ContainsKey(previousMatch.FullName))
+					{
+						_repeatLoadCounter[previousMatch.FullName]++;
+					}
+					else
+					{
+						_repeatLoadCounter.Add(previousMatch.FullName, 1);
+					}
+
+					if (_repeatLoadCounter[previousMatch.FullName] > 100)
+					{
+						throw new Exception("Excessive repeating load attempt detected");
+					}
+
 					return universe.Load(previousMatch.FullName);
 				}
 				else if (args.RequestingAssembly != null)
@@ -376,15 +400,16 @@ namespace IKVM.Internal
 						bestMatchLevel = 1;
 						bestMatch = assemblyDef;
 					}
-					return false;
+					return true;
 				case AssemblyComparisonResult.EquivalentUnified:
 				case AssemblyComparisonResult.EquivalentPartialUnified:
+					// Hack: System.Runtime.Extensions
 					if (bestMatchLevel < 2)
 					{
 						bestMatchLevel = 2;
 						bestMatch = assemblyDef;
 					}
-					return false;
+					return true;
 				case AssemblyComparisonResult.NonEquivalent:
 				case AssemblyComparisonResult.Unknown:
 					return false;

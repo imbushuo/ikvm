@@ -235,6 +235,10 @@ sealed class IkvmcCompiler
 		System.Threading.Thread.CurrentThread.Name = "compiler";
 		Tracer.EnableTraceConsoleListener();
 		Tracer.EnableTraceForDebug();
+#if DEBUG
+		return Compile(args);
+#endif
+
 		try
 		{
 			try
