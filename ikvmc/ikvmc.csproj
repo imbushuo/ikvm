@@ -6,6 +6,7 @@
     <DefineConstants>TRACE;DNC;NET_4_0;STATIC_COMPILER;EMITTERS</DefineConstants>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
+    <OutputPath>../bin</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
