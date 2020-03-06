@@ -245,6 +245,7 @@ ModelManifest.xml
 
 # Java
 *.jar
+*.class
 
 # Generated dll
 *.dll

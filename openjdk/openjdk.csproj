@@ -13,6 +13,7 @@
   
   <!-- OpenJDK tools dependency -->
   <ItemGroup>
+    <ProjectReference Include="..\odbcstub\odbcstub.csproj" />
     <ProjectReference Include="..\tools\depcheck\depcheck.csproj" />
     <ProjectReference Include="..\tools\implib\implib.csproj" />
     <ProjectReference Include="..\tools\licenseanalyzer\licenseanalyzer.csproj" />
@@ -105,12 +106,17 @@
   <Target Name="JdkStubGen">
     <CallTarget Targets="JdkStubClean" />
     <Exec Command="ikvmstub.exe -bootstrap %(StubJarLib.Identity)" WorkingDirectory="..\bin\netcoreapp3.1" />
+    <!-- ODBC stub is a special case -->
+    <Exec Command="ikvmstub.exe -bootstrap ..\..\odbcstub\bin\$(Configuration)\netstandard2.0\IKVM.ODBCStub.dll" WorkingDirectory="..\bin\netcoreapp3.1" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\IKVM.ODBCStub.jar" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
     <Copy SourceFiles="..\bin\netcoreapp3.1\%(StubJarLib.Identity).jar" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Delete Files="..\bin\netcoreapp3.1\IKVM.ODBCStub.jar" />
     <Delete Files="..\bin\netcoreapp3.1\%(StubJarLib.Identity).jar" />
   </Target>
   
   <Target Name="JdkStubClean">
     <Delete Files="%(StubJarLib.Identity).jar" />
+    <Delete Files="IKVM.ODBCStub.jar" />
   </Target>
   
   <!-- System.Core Gen -->
@@ -156,7 +162,7 @@
   
   <!-- OpenJDK Libraries -->
   <Target Name="CallJavaC">
-    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar &quot;@allsources.gen.lst&quot;" />
+    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar;IKVM.ODBCStub.jar &quot;@allsources.gen.lst&quot;" />
     <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/sun/reflect/misc/Trampoline.class" />
     <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/java/lang/invoke/MethodHandleImpl$BindCaller$T.class" />
   </Target>
