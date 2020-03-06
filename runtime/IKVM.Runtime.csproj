@@ -34,6 +34,22 @@
 
   <ItemGroup>
     <ProjectReference Condition="'$(IKVM_FinalPass)' != 'true'" Include="..\openjdkstub\Dummy.OpenJDK.Core.csproj" />
-  </ItemGroup>  
+  </ItemGroup>
+  
+  <Target Name="IkvmRuntimeStubJarGen">
+    <Exec Command="$(SolutionDir)..\bin\netcoreapp3.1\ikvmstub.exe -bootstrap IKVM.Runtime.dll -r:IKVM.OpenJDK.Core.dll" WorkingDirectory="$(OutDir)" />
+  </Target>
+  
+  <Target Name="IkvmRuntimeStubJarClean">
+    <Delete Files="$(OutDir)IKVM.Runtime.jar" />
+  </Target>
+  
+  <Target Name="PostBuildJarGeneration" AfterTargets="AfterBuild">
+    <CallTarget Condition="'$(IKVM_FinalPass)' != 'true'" Targets="IkvmRuntimeStubJarGen" />
+  </Target>
+  
+  <Target Name="PostBuildJarClean" AfterTargets="Clean">
+    <CallTarget Condition="'$(IKVM_FinalPass)' != 'true'" Targets="IkvmRuntimeStubJarClean" />
+  </Target>
   
   </Project>

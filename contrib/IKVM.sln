@@ -26,6 +26,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ikvmstub", "..\ikvmstub\ikvmstub.csproj", "{2BF3409C-BCC9-4C1F-9593-61F118421A30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IKVM.Runtime", "..\runtime\IKVM.Runtime.csproj", "{E8CA8BCE-1D3A-4133-AB07-6D65133C6C93}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2BF3409C-BCC9-4C1F-9593-61F118421A30} = {2BF3409C-BCC9-4C1F-9593-61F118421A30}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dummy.OpenJDK.Core", "..\openjdkstub\Dummy.OpenJDK.Core.csproj", "{F7B79F0D-E4E2-478E-AE9F-7667E9BE9CB5}"
 EndProject
@@ -42,6 +45,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "systemcoregen", "..\openjdk\systemcoregen\systemcoregen.csproj", "{7F3956F4-9EFB-44A6-8DC1-AF00EE2D516E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "openjdk", "..\openjdk\openjdk.csproj", "{92628152-0D38-41A3-9418-DCB0037B3AF2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2BF3409C-BCC9-4C1F-9593-61F118421A30} = {2BF3409C-BCC9-4C1F-9593-61F118421A30}
+		{E8CA8BCE-1D3A-4133-AB07-6D65133C6C93} = {E8CA8BCE-1D3A-4133-AB07-6D65133C6C93}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

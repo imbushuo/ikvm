@@ -115,6 +115,11 @@
     <Delete Files="java/lang/PropertyConstants.java" />
   </Target>
   
+  <!-- OpenJDK Libraries -->
+  <Target Name="CallJavaC">
+    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib.Identity, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar" />
+  </Target>
+  
   <!-- OpenJDK build task -->
   <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
     <CallTarget Targets="SystemCoreGen" />
