@@ -257,7 +257,7 @@
     <JawxsResPath>$(OpenJdkDir)\jaxws\src\share\jaxws_classes</JawxsResPath>
     <ResourceTempDir>restemp</ResourceTempDir>
   </PropertyGroup>
-  
+
   <Target Name="ResourcePack">    
     <ItemGroup>
       <ClassResItem Include="$(JdkClassResPath)/com/sun/corba/se/impl/orbutil/resources/*.properties" />
@@ -269,6 +269,7 @@
       <ClassResItem Include="$(JdkClassResPath)/sun/text/resources/th/*IteratorData_th" />
       <ClassResItem Include="$(JdkClassResPath)/sun/text/resources/th/thai_dict" />
       <CorbaResItem Include="$(JdkCorbaResPath)/**/*.properties" />
+      <MediaResItem Include="$(JdkMediaResPath)/**/*.properties" />
       <MediaResItem Include="$(JdkMediaResPath)/**/*.png" />
       <MediaResItem Include="$(JdkMediaResPath)/**/*.gif" />
       <MediaResItem Include="$(JdkMediaResPath)/**/*.wav" />
