@@ -247,6 +247,29 @@
     <Delete Files="vfs.zip" />
   </Target>
   
+  <!-- Final pass transformation -->
+  <Target Name="FinalPassGen">
+    <Delete Files="response.gen.txt" />
+    <Delete Files="MANIFEST.MF" />
+    <Delete Files="MANIFEST.MF" />
+    <Delete Files="resources/nashorn/version.properties" />
+    <TokenReplace Path="response.txt" OutputPath="response.gen.txt" Token="@OPENJDK@" Replacement="$(OpenJdkDir)" />
+    <TokenReplace Path="MANIFEST.MF.IN" OutputPath="MANIFEST.MF" Token="@IMPLEMENTATION_VERSION@" Replacement="$(JavaImplVersion)" />
+    <TokenReplace Path="MANIFEST.MF" OutputPath="MANIFEST.MF" Token="@SPECIFICATION_VERSION@" Replacement="$(JavaSpecVersion)" />
+    <TokenReplace Path="MANIFEST.MF.IN" OutputPath="MANIFEST.MF" Token="@IMPLEMENTATION_VERSION@" Replacement="$(JavaImplVersion)" />
+    <TokenReplace Path="MANIFEST.MF" OutputPath="MANIFEST.MF" Token="@SPECIFICATION_VERSION@" Replacement="$(JavaSpecVersion)" />
+    <TokenReplace Path="resources/nashorn/version.properties.in" OutputPath="resources/nashorn/version.properties" Token="@FULL_VERSION@" Replacement="$(JavaFullVersion)" />
+    <TokenReplace Path="resources/nashorn/version.properties" OutputPath="resources/nashorn/version.properties" Token="@IMPLEMENTATION_VERSION@" Replacement="$(JavaImplVersion)" />
+    <Touch Files="resources/nashorn/version.properties" />
+  </Target>
+
+  <Target Name="FinalPassClean">
+    <Delete Files="response.gen.txt" />
+    <Delete Files="MANIFEST.MF" />
+    <Delete Files="MANIFEST.MF" />
+    <Delete Files="resources/nashorn/version.properties" />
+  </Target>
+  
   <!-- OpenJDK build task -->
   <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
     <CallTarget Targets="SystemCoreGen" />
@@ -258,6 +281,7 @@
     <CallTarget Targets="RmiGen" />
     <CallTarget Targets="NasGen" />
     <CallTarget Targets="Vfs" />
+    <CallTarget Targets="FinalPassGen" />
   </Target>
   
   <Target Name="OpenJdkClean" AfterTargets="Clean">
@@ -269,5 +293,6 @@
     <!-- This also cleans RMI -->
     <CallTarget Targets="CleanJavaC" />
     <CallTarget Targets="CleanVfs" />
+    <CallTarget Targets="FinalPassClean" />
   </Target>
 </Project>

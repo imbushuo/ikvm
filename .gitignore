@@ -255,6 +255,7 @@ vfs.zip
 
 # Generated list
 *.gen.lst
+*.gen.txt
 
 # Launch Settings
 launchSettings.json
