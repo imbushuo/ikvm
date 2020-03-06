@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2007, 2009 Jeroen Frijters
+  Copyright (C) 2002 Jeroen Frijters
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,13 +21,46 @@
   jeroen@frijters.net
   
 */
-package java.lang;
 
-interface PropertyConstants
+package sun.misc;
+
+import cli.System.WeakReference;
+
+public abstract class Ref
 {
-    String awt_toolkit = "ikvm.awt.NetToolkit, IKVM.AWT.WinForms";
-    String java_awt_graphicsenv = "ikvm.awt.NetGraphicsEnvironment, IKVM.AWT.WinForms";
-    String java_vm_version = "8.2.0.0";
-    String java_runtime_version = "8.2.0.0";
-    String openjdk_version = "OpenJDK 8u45 b14";
+	private WeakReference weakRef = new WeakReference(null);
+
+	public Object get() 
+	{
+		Object p = weakRef.get_Target();
+		if(p == null)
+		{
+			synchronized(this) 
+			{
+				if((p = weakRef.get_Target()) == null) 
+				{
+					p = reconstitute();
+					weakRef.set_Target(p);
+				}
+			}
+		}
+		return p;
+	}
+
+	public abstract Object reconstitute();
+
+	public void flush() 
+	{
+		weakRef.set_Target(null);
+	}
+   
+	public void setThing(Object thing) 
+	{
+		weakRef.set_Target(thing);
+	}
+
+	public Object check()
+	{
+		return weakRef.get_Target();
+	}
 }

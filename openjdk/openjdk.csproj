@@ -117,7 +117,9 @@
   
   <!-- OpenJDK Libraries -->
   <Target Name="CallJavaC">
-    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib.Identity, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar" />
+    <Exec Command="javac -J-Xmx1536M -g -nowarn -implicit:none -parameters -cp dummy -bootclasspath @(StubJarLib, '.jar;').jar;../runtime/bin/$(Configuration)/netstandard2.0/IKVM.Runtime.jar &quot;@allsources.gen.lst&quot;" />
+    <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/sun/reflect/misc/Trampoline.class" />
+    <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/java/lang/invoke/MethodHandleImpl$BindCaller$T.class" />
   </Target>
   
   <!-- OpenJDK build task -->
@@ -127,6 +129,7 @@
     <CallTarget Targets="SourceListGen" />
     <CallTarget Targets="AssemblyInfoJavaGen" />
     <CallTarget Targets="PropertyConstantsJavaGen" />
+    <CallTarget Targets="CallJavaC" />
   </Target>
   
   <Target Name="OpenJdkClean" AfterTargets="Clean">

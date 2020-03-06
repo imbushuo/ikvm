@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2007, 2009 Jeroen Frijters
+  Copyright (C) 2007 Jeroen Frijters
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,13 +21,9 @@
   jeroen@frijters.net
   
 */
-package java.lang;
+package ikvm.internal;
 
-interface PropertyConstants
-{
-    String awt_toolkit = "ikvm.awt.NetToolkit, IKVM.AWT.WinForms";
-    String java_awt_graphicsenv = "ikvm.awt.NetGraphicsEnvironment, IKVM.AWT.WinForms";
-    String java_vm_version = "8.2.0.0";
-    String java_runtime_version = "8.2.0.0";
-    String openjdk_version = "OpenJDK 8u45 b14";
-}
+import java.lang.annotation.*;
+
+@Target({})
+public @interface __unspecified {}
