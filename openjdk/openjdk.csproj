@@ -65,6 +65,7 @@
     <StubjarLib Include="System.Configuration" />
     <StubjarLib Include="System.Configuration.ConfigurationManager" />
     <StubJarLib Include="System.Data" />
+    <StubJarLib Include="System.Data.Common" />
     <StubJarLib Include="System.Drawing" />
     <StubJarLib Include="System.Drawing.Primitives" />
     <StubJarLib Include="System.Drawing.Common" />
@@ -91,6 +92,14 @@
     <StubJarLib Include="System.Security.AccessControl" />
     <StubJarLib Include="System.Security.Permissions" />
     <StubJarLib Include="Microsoft.Win32.Primitives" />
+    <StubJarLib Include="System.Security" />
+    <StubJarLib Include="System.Security.Cryptography.Algorithms" />
+    <StubJarLib Include="System.Security.Cryptography.Cng" />
+    <StubJarLib Include="System.Security.Cryptography.Csp" />
+    <StubJarLib Include="System.Security.Cryptography.Encoding" />
+    <StubJarLib Include="System.Security.Cryptography.OpenSsl" />
+    <StubJarLib Include="System.Security.Cryptography.Primitives" />
+    <StubJarLib Include="System.Security.Cryptography.X509Certificates" />
   </ItemGroup>
   
   <Target Name="JdkStubGen">
