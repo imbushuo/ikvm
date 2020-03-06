@@ -371,7 +371,12 @@ final class NetFileSystemProvider extends AbstractFileSystemProvider
             if (false) throw new cli.System.IO.IOException();
             if (false) throw new cli.System.Security.SecurityException();
             if (false) throw new cli.System.UnauthorizedAccessException();
-            return FileDescriptor.fromStream(new FileStream(path, FileMode.wrap(mode), FileSystemRights.wrap(rights), FileShare.wrap(share), 8, FileOptions.wrap(options)));
+
+            final cli.System.IO.FileInfo fileInfo = new cli.System.IO.FileInfo(path);
+            return FileDescriptor.fromStream(cli.System.IO.FileSystemAclExtensions.Create(
+                fileInfo, FileMode.wrap(mode), FileSystemRights.wrap(rights),
+                FileShare.wrap(share), 8, FileOptions.wrap(options),
+                cli.System.IO.FileSystemAclExtensions.GetAccessControl(fileInfo)));
         }
         catch (cli.System.ArgumentException x)
         {

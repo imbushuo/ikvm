@@ -1991,21 +1991,14 @@ class Thread implements Runnable {
                 stacks[i] = new StackTraceElement[0];
             } else {
                 try {
-                    if (false) throw new cli.System.Threading.ThreadStateException();
-                    boolean suspended = false;
-                    if ((nativeThread.get_ThreadState().Value & cli.System.Threading.ThreadState.Suspended) == 0 && nativeThread != cli.System.Threading.Thread.get_CurrentThread()) {
-                        suspended = true;
-                        nativeThread.Suspend();
-                    }
                     cli.System.Diagnostics.StackTrace stack;
-                    try {
-                        stack = new cli.System.Diagnostics.StackTrace(nativeThread, true);
-                    }
-                    finally {
-                        if (suspended) {
-                            nativeThread.Resume();
-                        }
-                    }
+
+                    if (false) throw new cli.System.Threading.ThreadStateException();
+                    if (nativeThread != cli.System.Threading.Thread.get_CurrentThread()) {
+                        throw new cli.System.Threading.ThreadStateException("Capturing non-current thread is deprecated in .NET Core");
+					}
+
+                    stack = new cli.System.Diagnostics.StackTrace(true);
                     stacks[i] = getStackTrace(stack);
                 }
                 catch (cli.System.Threading.ThreadStateException _) {

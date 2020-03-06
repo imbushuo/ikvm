@@ -166,6 +166,13 @@
     <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/sun/reflect/misc/Trampoline.class" />
     <Touch Files="$(OpenJdkDir)/jdk/src/share/classes/java/lang/invoke/MethodHandleImpl$BindCaller$T.class" />
   </Target>
+
+  <Target Name="CleanJavaC">
+    <ItemGroup>
+      <JavaClassFiles Include="**\*.class"/>
+    </ItemGroup>
+    <Delete Files="@(JavaClassFiles)" />
+  </Target>
   
   <!-- OpenJDK build task -->
   <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
@@ -183,6 +190,6 @@
     <CallTarget Targets="SystemCoreClean" />
     <CallTarget Targets="AssemblyInfoJavaClean" />
     <CallTarget Targets="PropertyConstantsJavaClean" />
+    <CallTarget Targets="CleanJavaC" />
   </Target>
-  
 </Project>
