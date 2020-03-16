@@ -12,6 +12,10 @@
     <DefineConstants>TRACE;DNC;FIRST_PASS</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>../bin</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="../CommonAssemblyInfo.cs" />
   </ItemGroup>
