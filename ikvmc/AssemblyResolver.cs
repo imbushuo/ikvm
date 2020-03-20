@@ -70,11 +70,14 @@ namespace IKVM.Internal
 			{
 				libpath.Add(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory());
 			}
+
 			foreach (string str in userLibPaths)
 			{
 				AddLibraryPaths(str, true);
 			}
+
 			AddLibraryPaths(Environment.GetEnvironmentVariable("LIB") ?? "", false);
+
 			if (nostdlib)
 			{
 				 mscorlibVersion = LoadMscorlib(references).GetName().Version;
@@ -83,6 +86,7 @@ namespace IKVM.Internal
 			{
 				mscorlibVersion = universe.Load("mscorlib").GetName().Version;
 			}
+
 #if STATIC_COMPILER
 			universe.AssemblyResolve += AssemblyResolve;
 #else

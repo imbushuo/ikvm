@@ -193,8 +193,26 @@ static class NetExp
 			else
 			{
 				StaticCompiler.LoadFile(typeof(NetExp).Assembly.Location);
-				StaticCompiler.runtimeAssembly = StaticCompiler.LoadFile(Path.Combine(typeof(NetExp).Assembly.Location, "../IKVM.Runtime.dll"));
-				JVM.CoreAssembly = StaticCompiler.LoadFile(Path.Combine(typeof(NetExp).Assembly.Location, "../IKVM.OpenJDK.Core.dll"));
+
+				var runtimeAssembly = Path.Combine(Directory.GetCurrentDirectory(), "IKVM.Runtime.dll");
+				if (File.Exists(runtimeAssembly))
+				{
+					StaticCompiler.runtimeAssembly = StaticCompiler.LoadFile(runtimeAssembly);
+				}
+				else
+				{
+					StaticCompiler.runtimeAssembly = StaticCompiler.LoadFile(Path.Combine(typeof(NetExp).Assembly.Location, "../IKVM.Runtime.dll"));
+				}
+
+				var jdkAssembly = Path.Combine(Directory.GetCurrentDirectory(), "IKVM.OpenJDK.Core.dll");
+				if (File.Exists(runtimeAssembly))
+				{
+					JVM.CoreAssembly = StaticCompiler.LoadFile(jdkAssembly);
+				}
+				else
+				{
+					JVM.CoreAssembly = StaticCompiler.LoadFile(Path.Combine(typeof(NetExp).Assembly.Location, "../IKVM.OpenJDK.Core.dll"));
+				}
 			}
 			if (AttributeHelper.IsJavaModule(assembly.ManifestModule))
 			{

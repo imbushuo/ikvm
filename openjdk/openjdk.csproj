@@ -116,7 +116,7 @@
   
   <Target Name="JdkStubClean">
     <Delete Files="%(StubJarLib.Identity).jar" />
-    <Delete Files="IKVM.ODBCStub.jar" />
+    <Delete Files="System.Data.Odbc.jar" />
   </Target>
   
   <!-- System.Core Gen -->
@@ -323,6 +323,49 @@
     <Delete Files="resources/nashorn/version.properties" />
   </Target>
   
+  <!-- Core generation -->
+  <Target Name="CoreGeneration">
+    <Copy SourceFiles="..\bin\netcoreapp3.1\IKVM.AWT.WinForms.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\IKVM.AWT.WinForms.pdb" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\IKVM.AWT.WinForms.deps.json" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\runtime\bin\Debug\netstandard2.1\IKVM.Runtime.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\runtime\bin\Debug\netstandard2.1\IKVM.Runtime.deps.json" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\runtime\bin\Debug\netstandard2.1\IKVM.Runtime.pdb" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <!-- .NET Core Desktop dependencies -->
+    <Copy SourceFiles="..\bin\netcoreapp3.1\System.Configuration.ConfigurationManager.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\odbcstub\bin\Debug\netstandard2.1\System.Data.Odbc.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\System.Drawing.Common.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\System.Security.Permissions.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="..\bin\netcoreapp3.1\System.Windows.Extensions.dll" DestinationFolder="$(ProjectDir)" OverwriteReadOnlyFiles="true" />
+    <!-- Call IKVMC for generation -->
+    <!-- Ignore exit code because we know JNI is going to fail -->
+    <Exec Command="..\bin\netcoreapp3.1\ikvmc.exe -version:8.0.0.0 -compressresources -opt:fields -strictfinalfieldsemantics -removeassertions -target:library -sharedclassloader -r:mscorlib.dll -r:System.dll -r:System.Runtime.dll -r:netstandard.dll -r:System.Core.dll -r:System.Collections.dll -r:System.Collections.Specialized.dll -r:System.Console.dll -r:System.ComponentModel.dll -r:System.ComponentModel.TypeConverter.dll -r:System.ComponentModel.Primitives.dll -r:System.Configuration.dll -r:System.Configuration.ConfigurationManager.dll -r:System.Data.dll -r:System.Data.Common.dll -r:System.Drawing.dll -r:System.Drawing.Primitives.dll -r:System.Drawing.Common.dll -r:System.Private.CoreLib.dll -r:System.Private.Xml.dll -r:System.Private.Uri.dll -r:System.Xml.dll -r:System.Xml.ReaderWriter.dll -r:System.Runtime.Extensions.dll -r:System.Net.Primitives.dll -r:System.Net.Sockets.dll -r:System.IO.dll -r:System.IO.FileSystem.Primitives.dll -r:System.IO.FileSystem.AccessControl.dll -r:System.IO.FileSystem.DriveInfo.dll -r:System.IO.FileSystem.Watcher.dll -r:System.IO.FileSystem.dll -r:System.Diagnostics.Process.dll -r:System.Diagnostics.FileVersionInfo.dll -r:System.Diagnostics.StackTrace.dll -r:System.Net.dll -r:System.Net.NetworkInformation.dll -r:System.Net.Mail.dll -r:System.Security.AccessControl.dll -r:System.Security.Permissions.dll -r:Microsoft.Win32.Primitives.dll -r:System.Security.dll -r:System.Security.Cryptography.Algorithms.dll -r:System.Security.Cryptography.Cng.dll -r:System.Security.Cryptography.Csp.dll -r:System.Security.Cryptography.Encoding.dll -r:System.Security.Cryptography.OpenSsl.dll -r:System.Security.Cryptography.Primitives.dll -r:System.Security.Cryptography.X509Certificates.dll -r:IKVM.Runtime.dll -r:System.Data.Odbc.dll -nowarn:110 -nowarn:119 -nowarn:132 -w4 -noparameterreflection -warnaserror @response.gen.txt" IgnoreExitCode="true" />
+    <!-- Update base addresses in response.txt for next build -->
+    <Exec Command="..\tools\updbaseaddress\bin\Debug\netcoreapp3.1\updbaseaddress.exe response.txt" />
+    <!-- Generate stubs for the public Java APIs we expose -->
+    <MakeDir Directories="lib" />
+    <Exec Command="..\bin\netcoreapp3.1\ikvmstub.exe -out:lib/ikvm-api.jar IKVM.OpenJDK.Core.dll -namespace:ikvm.io -namespace:ikvm.lang -namespace:ikvm.runtime" />
+  </Target>
+  
+  <!-- Core cleanup -->
+  <Target Name="CoreGenerationCleanup">
+    <Delete Files="IKVM.AWT.WinForms.dll" />
+    <Delete Files="IKVM.AWT.WinForms.pdb" />
+    <Delete Files="IKVM.AWT.WinForms.deps.json" />
+    <Delete Files="IKVM.Runtime.dll" />
+    <Delete Files="IKVM.Runtime.deps.json" />
+    <Delete Files="IKVM.Runtime.pdb" />
+    <Delete Files="System.Configuration.ConfigurationManager.dll" />
+    <Delete Files="System.Data.Odbc.dll" />
+    <Delete Files="System.Drawing.Common.dll" />
+    <Delete Files="System.Security.Permissions.dll" />
+    <Delete Files="System.Windows.Extensions.dll" />
+    <ItemGroup Label="CoreGenIncludeGroup">
+      <CoreGenItem Include="IKVM.OpenJDK.*.dll" />
+    </ItemGroup>
+    <Delete Files="@(CoreGenItem)" />
+  </Target>
+  
   <!-- OpenJDK build task -->
   <Target Name="OpenJdkGen" BeforeTargets="BeforeBuild">
     <CallTarget Targets="SystemCoreGen" />
@@ -336,6 +379,7 @@
     <CallTarget Targets="Vfs" />
     <CallTarget Targets="ResourcePack" />
     <CallTarget Targets="FinalPassGen" />
+    <CallTarget Targets="CoreGeneration" />
   </Target>
   
   <Target Name="OpenJdkClean" AfterTargets="Clean">
@@ -349,5 +393,6 @@
     <CallTarget Targets="CleanVfs" />
     <CallTarget Targets="CleanResourcePack" />
     <CallTarget Targets="FinalPassClean" />
+    <CallTarget Targets="CoreGenerationCleanup" />
   </Target>
 </Project>

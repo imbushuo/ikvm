@@ -2534,21 +2534,35 @@ namespace IKVM.Internal
 			return false;
 		}
 
+		static Assembly LoadFileWithFallbackToCurrentDir(string runtimeAssembly)
+		{
+			try
+			{
+				return StaticCompiler.LoadFile(runtimeAssembly);
+			}
+			catch (FileNotFoundException)
+			{
+				var fileName = Path.GetFileName(runtimeAssembly);
+				var fallbackFullPath = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+				return StaticCompiler.LoadFile(fallbackFullPath);
+			}
+		}
+
 		internal static int Compile(string runtimeAssembly, List<CompilerOptions> optionsList)
 		{
 			try
 			{
-				if(runtimeAssembly == null)
+				if (runtimeAssembly == null)
 				{
 					// we assume that the runtime is in the same directory as the compiler
 					runtimeAssembly = Path.Combine(typeof(CompilerClassLoader).Assembly.Location, ".." + Path.DirectorySeparatorChar + "IKVM.Runtime.dll");
 				}
-				StaticCompiler.runtimeAssembly = StaticCompiler.LoadFile(runtimeAssembly);
-				StaticCompiler.runtimeJniAssembly = StaticCompiler.LoadFile(Path.Combine(StaticCompiler.runtimeAssembly.Location, ".." + Path.DirectorySeparatorChar + "IKVM.Runtime.JNI.dll"));
+				StaticCompiler.runtimeAssembly = LoadFileWithFallbackToCurrentDir(runtimeAssembly);
+				StaticCompiler.runtimeJniAssembly = LoadFileWithFallbackToCurrentDir(Path.Combine(StaticCompiler.runtimeAssembly.Location, ".." + Path.DirectorySeparatorChar + "IKVM.Runtime.JNI.dll"));
 			}
-			catch(FileNotFoundException)
+			catch (FileNotFoundException)
 			{
-				if(StaticCompiler.runtimeAssembly == null)
+				if (StaticCompiler.runtimeAssembly == null)
 				{
 					throw new FatalCompilerErrorException(Message.RuntimeNotFound);
 				}
