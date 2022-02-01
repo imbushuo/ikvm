@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpZipLib" Version="1.2.0" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
     <ProjectReference Include="..\reflect\IKVM.Reflection.csproj" />
   </ItemGroup>
